@@ -1,26 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {Route} from 'react-router-dom'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Login from './container/login'
+import Game from './container/test'
+import IndexLayout from './container/layout'
+import WritPager from './container/Pager/writePaper'
+import TestPager from './container/Pager/TestpPager'
+
+// 业务主入口
+// 路由的匹配
+class App extends React.Component{
+  render(){
+    return (
+      <div>
+      <Route path="/Login" component={Login}></Route>
+      <Route path="/Demo" component={Game}></Route>
+      <Route path='/Index' component={IndexLayout}></Route>
+      <Route path='/writePager/:id' component={WritPager}></Route>
+      <Route path='/testpaper/:id' component={TestPager}></Route>
+      </div>
+    )
+  }
 }
 
 export default App;

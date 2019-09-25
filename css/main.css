@@ -1,0 +1,34 @@
+.login-form {
+  margin-top: 150px;
+}
+.login-form-forgot {
+  float: right;
+}
+.login-form-button {
+  width: 100%;
+}
+.login-titile {
+  text-align: center;
+}
+.logo {
+  height: 32px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 16px;
+}
+.userinfo {
+  float: right;
+  height: 100%;
+  width: 100px;
+  margin-right: 100px;
+  cursor: pointer;
+}
+.userinfo:hover {
+  background: #e6f7ff;
+}
+.userinfo .Avatar {
+  margin-left: 5px;
+}
+.button-add {
+  margin: 20px;
+}
+/*# sourceMappingURL=./style.css.map */

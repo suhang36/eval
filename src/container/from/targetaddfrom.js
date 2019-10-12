@@ -1,5 +1,6 @@
 import React from 'react'
-import { Icon, Form, Radio, Button, Input,InputNumber } from 'antd'
+import { Icon, Form, Radio, Button, Input,InputNumber,message } from 'antd'
+import Axios from 'axios';
 let id = 0;
 class TargetAddFromCompent extends React.Component {
     // constructor(props){
@@ -36,9 +37,47 @@ class TargetAddFromCompent extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const { keys, names } = values;
-                console.log('Received values of form: ', values);
-                console.log('Merged values:', keys.map(key => names[key]));
+                console.log(JSON.stringify(values,null,2))
+                let data={}
+                data.name=values.indexName
+                data.weight=values.weghit
+                let op=[];
+                for(let i=0;i<values.option.length;i++){ 
+                    let option={}
+                    option.name=values.option[i]
+                    option.fraction=values.optionscore[i]
+                    // console.log(option)
+                    op[i]=option
+                    // op[i]=
+                }
+                data.option=op
+                Axios({
+                    url:'/insertIndex',
+                    method:'post',
+                    params:{
+                        ...data
+                    }
+                }).then(v=>{
+                    if(v.data===1){
+                        message.success('添加成功')
+                    }else{
+                        message.error('添加失败')
+                    }
+                })
+                // Axios({
+                //     url:'/insertIndexF',
+                //     method:'post',
+                //     params:{
+                //       name:values.indexname,
+                //       id:this.props.pid
+                //     }
+                //   }).then(res=>{
+                //     if(res.data===1){
+                //       message.success('添加成功')
+                //     }else{
+                //       message.error('添加失败')
+                //     }
+                //   })
             }
         });
     };
@@ -63,9 +102,10 @@ class TargetAddFromCompent extends React.Component {
         getFieldDecorator('keys', { initialValue: [] });
         const keys = getFieldValue('keys');
         const formItems = keys.map((k, index) => (
+            <div>
             <Form.Item
-            {...(index === 0 ? formItemLayout : formItemLayoutOnLabel)}
-                label={index === 0 ? '选项' : ''}
+            {...formItemLayout}
+                label={'选项'}
                 required={false}
                 key={k}
             >
@@ -78,7 +118,25 @@ class TargetAddFromCompent extends React.Component {
                             message: "请输入选项",
                         },
                     ],
-                })(<Input placeholder="请输入" style={{ width: '60%', marginRight: 8 }} />)}
+                })(<Input placeholder="选项名" style={{ width: '60%', marginRight: 8 }} />)}
+                </Form.Item>
+                <Form.Item
+                {...formItemLayout }
+                    label={'权重'}
+                    required={false}
+                    key={k}
+                >
+                {getFieldDecorator(`optionscore[${k}]`, {
+                    validateTrigger: ['onChange', 'onBlur'],
+                    rules: [
+                        {
+                            required: true,
+                            whitespace: true,
+                            message: "请输入权重",
+                        },
+                    ],
+                })(<InputNumber placeholder='权重' min={0} max={1} style={{ width: '60%', marginRight: 8 }} />)}
+                
                 {keys.length > 1 ? (
                     <Icon
                         className="dynamic-delete-button"
@@ -87,6 +145,7 @@ class TargetAddFromCompent extends React.Component {
                     />
                 ) : null}
             </Form.Item>
+            </div>
         ));
         
         return (<div>
@@ -95,18 +154,19 @@ class TargetAddFromCompent extends React.Component {
             {getFieldDecorator('indexName', {
                 rules: [
                 {
-                    type: 'indexName',
-                    message: 'The input is not valid E-mail!',
-                },
-                {
                     required: true,
-                    message: 'Please input your E-mail!',
+                    message: '请输入指标名',
                 },
                 ],
             })(<Input />)}
             </Form.Item>
             <Form.Item label="权重">
-                    {getFieldDecorator('input-number', { initialValue: 0.1})(<InputNumber min={0} max={1} />)}
+                    {getFieldDecorator('weghit', { initialValue: 0.1,rules: [
+                {
+                    required: true,
+                    message: '权重',
+                },
+                ],})(<InputNumber min={0} max={1} />)}
                 </Form.Item>
                 {formItems}
                 <Form.Item {...formItemLayoutOnLabel}>

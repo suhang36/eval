@@ -1,14 +1,26 @@
 import React from 'react'
-import { Icon, Form, Radio, Button, Input,InputNumber } from 'antd'
+import { Icon, Form, Radio, Button, Input,message,InputNumber } from 'antd'
+import Axios from 'axios';
 let id = 0;
 class TargetAddFromCompent extends React.Component {
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                const { keys, names } = values;
-                console.log('Received values of form: ', values);
-                console.log('Merged values:', keys.map(key => names[key]));
+                Axios({
+                  url:'/insertIndexF',
+                  method:'post',
+                  params:{
+                    name:values.indexname,
+                    id:this.props.pid
+                  }
+                }).then(res=>{
+                  if(res.data===1){
+                    message.success('添加成功')
+                  }else{
+                    message.error('添加失败')
+                  }
+                })
             }
         });
     };
@@ -33,18 +45,7 @@ class TargetAddFromCompent extends React.Component {
         return (<div>
             <Form onSubmit={this.handleSubmit} {...formItemLayout} style={{ marginTop: 20 }}>
             <Form.Item label="指标名">
-            {getFieldDecorator('indexName', {
-                rules: [
-                {
-                    type: 'indexName',
-                    message: 'The input is not valid E-mail!',
-                },
-                {
-                    required: true,
-                    message: 'Please input your E-mail!',
-                },
-                ],
-            })(<Input />)}
+            {getFieldDecorator('indexName', {rules: [{ required: true, message: '请输入' }],})(<Input />)}
             </Form.Item>
                 <Form.Item {...formItemLayoutOnLabel}>
                     <Button type="primary" htmlType="submit">

@@ -110,6 +110,7 @@ export function login(password,username){
             if(res.data.code===1){
             const data=res.data
             data.username=username
+            console.log('data'+JSON.stringify(res.data,null,2))
             if(typeof(Storage) !=="undefined"){
                 sessionStorage.setItem("username",username)
             }else{

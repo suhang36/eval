@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import Axios from 'axios';
 const { Search } = Input;
 @withRouter
-class Pjteacher extends React.Component {
+class Pjmyself extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -18,21 +18,22 @@ class Pjteacher extends React.Component {
     fetch=()=>{
         console.log(sessionStorage.getItem('username'))
         Axios({
-            url:'/getstudentquestionnaire',
+            url:'/getteacherzcquestion',
             method:'get',
             params:{
-                studentname:sessionStorage.getItem('username')
+                teachername:sessionStorage.getItem('username')
             }
         }).then(res=>{
             console.log(JSON.stringify(res.data.studentquestion,null,2))
+            let query=[res.data.querytionexa]
             this.setState({
-                papers:res.data.studentquestion
+                papers:query
             })
         })
     }
     render() {
         return <div>
-            <Card title="评价老师" extra={<div>
+            <Card title="自评" extra={<div>
             </div>
             } style={{ padding: 24, background: '#fff', marginTop: 32 }}>
                 {this.state.papers.map(item =>
@@ -55,7 +56,7 @@ class Pjteacher extends React.Component {
                                         name:sessionStorage.getItem('username'),
                                         tid:item.tid
                                     }
-                            })}  icon={'edit'} >
+                            })} icon={'edit'} >
                                     开始评教
                                     </Button>:
                                     <Typography>已关闭</Typography>
@@ -69,4 +70,4 @@ class Pjteacher extends React.Component {
     }
 }
 
-export default Pjteacher
+export default Pjmyself

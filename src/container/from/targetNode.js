@@ -21,7 +21,6 @@ class TargetNode extends React.Component {
             <Paragraph>选择添加类型</Paragraph>
             <Radio.Group defaultValue={"添加父级指标"} onChange={this.handleChange}>
                 <Radio value="添加父级指标">添加父级指标</Radio>
-                <Radio value="添加子级指标">添加子级指标</Radio>
                 <Radio value="添加题目指标">添加题目指标</Radio>
             </Radio.Group>
         </div>
@@ -29,15 +28,11 @@ class TargetNode extends React.Component {
             case "添加题目指标":
                 return (<div>
                     {change}
-                    <TargetAddFrom></TargetAddFrom>
+                    <TargetAddFrom pid={this.props.pid}></TargetAddFrom>
                 </div>)
-            case "添加子级指标":
-               return <div>{change}
-                <TargetAddFromFater></TargetAddFromFater>
-                </div> 
                 case "添加父级指标":
                         return <div>{change}
-                         <TargetAddFromFater></TargetAddFromFater>
+                         <TargetAddFromFater pid={this.props.pid}></TargetAddFromFater>
                          </div> 
             default:
                 return <div>{ change }</div>

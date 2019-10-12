@@ -4,11 +4,33 @@ import { withRouter } from 'react-router-dom'
 import Axios from 'axios';
 const { Search } = Input;
 @withRouter
-class Pjteacher extends React.Component {
+class Pjyourself extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             papers: [
+                {
+                    id: "19301",
+                    title: "辅导员评价",
+                    batch: "2019第二学期",
+                    status: 0,
+                    date: '2019-9-27',
+                    number: 23,
+                },
+                {
+                    id: "19302",
+                    title: "软件工程老师评价",
+                    batch: "2019第一学期",
+                    status: 1,
+                    date: '2019-9-27',
+                },
+                {
+                    id: "19303",
+                    title: "数据库老师评价",
+                    batch: "2019第三学期",
+                    status: 1,
+                    date: '2019-9-27',
+                }
             ]
         }
     }
@@ -18,10 +40,10 @@ class Pjteacher extends React.Component {
     fetch=()=>{
         console.log(sessionStorage.getItem('username'))
         Axios({
-            url:'/getstudentquestionnaire',
+            url:'/getteacherquestionnaire',
             method:'get',
             params:{
-                studentname:sessionStorage.getItem('username')
+                teachername:sessionStorage.getItem('username')
             }
         }).then(res=>{
             console.log(JSON.stringify(res.data.studentquestion,null,2))
@@ -55,7 +77,7 @@ class Pjteacher extends React.Component {
                                         name:sessionStorage.getItem('username'),
                                         tid:item.tid
                                     }
-                            })}  icon={'edit'} >
+                            })} icon={'edit'} >
                                     开始评教
                                     </Button>:
                                     <Typography>已关闭</Typography>
@@ -69,4 +91,4 @@ class Pjteacher extends React.Component {
     }
 }
 
-export default Pjteacher
+export default Pjyourself

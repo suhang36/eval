@@ -8,6 +8,8 @@ import Paper from '../layout/paper';
 import Pjteacher from '../student/pjteacher/pjteacher';
 import DataPager from '../teacher/DataPager';
 import Pjresult from '../layout/pjresult';
+import Pjmyself from '../teacher/pjmyself';
+import Pjyourself from '../teacher/pjyourself';
 @connect(state => state.user)
 
 class Main extends React.Component{
@@ -29,6 +31,10 @@ class Main extends React.Component{
                 return <DataPager></DataPager>
             case "PjResult":
                 return <Pjresult></Pjresult>
+            case "Pjmyself":
+                return <Pjmyself></Pjmyself>
+            case "Pjyourself":
+                return <Pjyourself></Pjyourself>
             default:
                 return <Pjteacher></Pjteacher>
         }

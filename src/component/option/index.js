@@ -25,8 +25,7 @@ class Option extends React.Component{
                 <Divider />
                 <div style={{padding:20}}>
                     <Typography style={{fontSize:16,fontWeight:"bold"}}>{this.props.problem.id}.{this.props.problem.title} </Typography>
-                    <Radio.Group onChange={this.onChange} size={"small"} style={{margin:20}}>
-                        {console.log(JSON.stringify(this.props.problem.Option,null,2))}
+                    <Radio.Group onChange={(v)=>{this.props.onchange(this.props.problem.id,v)}} size={"small"} style={{margin:20}}>
                         {this.props.problem.option.map(v=>{
                             return (<Radio style={radioStyle} value={v.id} key={v.id}>
                                 {v.title}

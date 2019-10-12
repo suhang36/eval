@@ -1,6 +1,7 @@
 import React from 'react';
-import { Tree, Row, Col, Typography, Descriptions, Form,Tabs, Radio, Button, Divider, Input, Icon } from 'antd';
+import { Tree, Row, Col, Typography,Spin, Descriptions, Form,Tabs, Radio, Button, Divider, Input, Icon, message } from 'antd';
 import TargetNode from '../from/targetNode';
+import Axios from 'axios';
 const { Title, Paragraph } = Typography;
 const { TreeNode } = Tree;
 const { TabPane } = Tabs
@@ -8,85 +9,101 @@ const { TabPane } = Tabs
 class Index extends React.Component {
     constructor(props) {
         super(props)
-
         this.state = {
+            onloding:false,
             str: '非常满意',
-            treeData: [
-                {
-                    title: '指标管理',
-                    key: '1',
-                    children: [
-                        {
-                            title: '同行',
-                            key: '2',
-                            children: [
-                                { title: '概念的讲解', key: '3' },
-                                { title: '重点难点', key: '4' },
-                                { title: '逻辑性和条理性', key: '5' },
-                            ],
-                        },
-                        {
-                            title: '0-0-1',
-                            key: '0-0-1',
-                            children: [
-                                { title: '0-0-1-0', key: '0-0-1-0' },
-                                { title: '0-0-1-1', key: '0-0-1-1' },
-                                { title: '0-0-1-2', key: '0-0-1-2' },
-                            ],
-                        },
-                        {
-                            title: '0-0-2',
-                            key: '0-0-2',
-                        },
-                    ],
-                },
-                {
-                    title: '0-1',
-                    key: '0-1',
-                    children: [
-                        { title: '0-1-0-0', key: '0-1-0-0' },
-                        { title: '0-1-0-1', key: '0-1-0-1' },
-                        { title: '0-1-0-2', key: '0-1-0-2' },
-                    ],
-                },
-                {
-                    title: '0-2',
-                    key: '0-2',
-                },
+            thisindex:'1',
+            treeData: [//指标树
             ],
             showData:{
-                name:"概念讲解",
-                fatherName:"同行",
-                sonName:"无",
-                id:"1",
-                weight:"0.1",
-                option:[
-                    {
-                        id:1,
-                        name:"非常满意"
-                    },
-                    {
-                        id:2,
-                        name:"满意"
-                    },
-                    {
-                        id:3,
-                        name:"不满意"
-                    },
-                    {
-                        id:4,
-                        name:"非常不满意"
-                    }
+                "name": "指标管理",
+                "weight": "0",
+                "pid": 0,
+                "id": 1,
+                "sort": 1,
+                "option": [
+                  {
+                    "id": 1,
+                    "name": "非常满意",
+                    "fraction": 5
+                  },
+                  {
+                    "id": 2,
+                    "name": "满意",
+                    "fraction": 3
+                  }
                 ]
-            }
+              }
         }
     }
-    onDragEnter = info => {
-        console.log(info);
+    componentDidMount(){
+        this.onDragEnter()
+        this.fetch()
+    }
+    fetch=()=>{
+        Axios({
+            url:'/selectIndex',
+            method:'post',
+            type:'json'
+        }).then(res=>{
+            if(res.data.status===1){
+                this.setState({
+                    treeData:res.data.data
+                })
+            }
+        })
+
+    }
+    handledelete=()=>{
+        Axios({
+            url:'/deleteIndex',
+            method:'post',
+            type:'json',
+            params:{
+                id:this.state.thisindex
+            }
+        }).then(res=>{
+            if(res.data===1){
+                message.success('删除成功')
+            }else{
+                message.warning('删除失败')
+            }
+        })
+    }
+
+    onDragEnter = (info=1)=> {
+        this.setState({onloding:true})
+        Axios({
+            url:'/selectIndexOption',
+            method:'get',
+            type:'json',
+            params:{
+                id:info
+            }
+        }).then(res=>{
+            this.setState({onloding:false})
+                this.setState({
+                    showData:res.data,
+                    thisindex:info,
+                })
+        })
     };
+    handleonSelect=(info)=>{
+        this.onDragEnter(info[0])
+    }
     onChange = (str,title) => {
-        console.log('Content change:', str);
-        let data = Object.assign({}, this.state.showData, { [title]: str })
+        let  data= Object.assign({}, this.state.showData, { [title]: str })
+        
+        Axios({
+            url:'/updateIndex1',
+            method:'post',
+            type:'json',
+            data:{
+                ...data
+            }
+        }).then(()=>{
+            message.success('修改成功')
+        })
         this.setState({showData:data})
     };
     onChangeitem = (str,id) => {
@@ -119,7 +136,7 @@ class Index extends React.Component {
                             <Tree
                                 className="draggable-tree"
                                 defaultExpandedKeys={this.state.expandedKeys}
-                                onSelect={this.onDragEnter}
+                                onSelect={this.handleonSelect}
                             >
                                 {loop(this.state.treeData)}
                             </Tree>
@@ -131,33 +148,32 @@ class Index extends React.Component {
                 </Col>
                 <Col offset={1} span={18} style={{ padding: 24, background: '#fff', marginTop: 32 }}>
                     <Tabs defaultActiveKey="1">
-                        <TabPane tab="指标信息" key="1">
+                        <TabPane tab="指标信息" key="1" >
+                        <Spin size="large" spinning={this.state.onloding} >
                         <Row>
                         <Col span={24} >
-                            <Button type="link " style={{ marginLeft: 5, float: 'right' }}>删除指标</Button>
+                            <Button type="link " onClick={this.handledelete} style={{ marginLeft: 5, float: 'right' }}>删除指标</Button>
                             <Descriptions title="基本信息" bordered>
                                 <Descriptions.Item label="当前指标"><Paragraph  editable={{ onChange:(str)=>{this.onChange(str,"name")}}}>{this.state.showData.name}</Paragraph></Descriptions.Item>
-                                <Descriptions.Item  label="父级指标"><Paragraph  editable={{ onChange:(str)=>{this.onChange(str,"fatherName")}}}>{this.state.showData.fatherName}</Paragraph></Descriptions.Item>
-                                <Descriptions.Item  label="子级指标"><Paragraph  editable={{ onChange:(str)=>{this.onChange(str,"sonName")}}}>{this.state.showData.sonName}</Paragraph></Descriptions.Item>
-                                <Descriptions.Item  label="指标权重"><Paragraph  editable={{ onChange:(str)=>{this.onChange(str,"weight")}}}>{this.state.showData.weight}</Paragraph></Descriptions.Item>
-                                <Descriptions.Item  label="描述">
-                                    No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China
-                                </Descriptions.Item>
+                               <Descriptions.Item  label="指标权重"><Paragraph  editable={{ onChange:(str)=>{this.onChange(str,"weight")}}}>{this.state.showData.weight}</Paragraph></Descriptions.Item>
                             </Descriptions>
                             <Descriptions column={1} title="选项" bordered>
                                 {   
                                     this.state.showData.option.map(v=>{
                                         i++
-                                   return <Descriptions.Item  label={`选项${i}`}><Paragraph  editable={{ onChange:(str)=>{this.onChangeitem(str,v.id)}}}>{v.name}</Paragraph></Descriptions.Item>
+                                   return <Descriptions.Item key={v.id}  label={`选项${i}`}><Paragraph  editable={{ onChange:(str)=>{this.onChangeitem(str,v.id)}}}>{v.name}</Paragraph></Descriptions.Item>
+                                          
+                                            
                                })}                        
                             </Descriptions>
                         </Col>
-                    </Row>
+                     </Row>
+                     </Spin>
                         </TabPane>
                         <TabPane tab="指标管理" key="2">
                         <Row>
                         <Col span={24}>
-                        <TargetNode></TargetNode>
+                        <TargetNode pid={this.state.showData.pid}></TargetNode>
                         </Col>
                     </Row>
                         </TabPane>

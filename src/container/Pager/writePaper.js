@@ -1,4 +1,5 @@
 import React from 'react'
+import Axios from 'axios';
 import { Layout, Menu, Tree, Divider, Typography, Row, Col, Input,Select } from 'antd'
 import Option from '../../component/option/index'
 const { Header, Content, Footer } = Layout;
@@ -9,96 +10,18 @@ class WritPager extends React.Component {
         super(props);
         this.state = {
             treeData: [
-                {
-                    title: '指标管理',
-                    key: '1',
-                    children: [
-                        {
-                            title: '同行',
-                            key: '2',
-                            children: [
-                                { title: '概念的讲解', key: '3' },
-                                { title: '重点难点', key: '4' },
-                                { title: '逻辑性和条理性', key: '5' },
-                            ],
-                        },
-                        {
-                            title: '0-0-1',
-                            key: '0-0-1',
-                            children: [
-                                { title: '0-0-1-0', key: '0-0-1-0' },
-                                { title: '0-0-1-1', key: '0-0-1-1' },
-                                { title: '0-0-1-2', key: '0-0-1-2' },
-                            ],
-                        },
-                        {
-                            title: '0-0-2',
-                            key: '0-0-2',
-                        },
-                    ],
-                },
-                {
-                    title: '0-1',
-                    key: '0-1',
-                    children: [
-                        { title: '0-1-0-0', key: '0-1-0-0' },
-                        { title: '0-1-0-1', key: '0-1-0-1' },
-                        { title: '0-1-0-2', key: '0-1-0-2' },
-                    ],
-                },
-                {
-                    title: '0-2',
-                    key: '0-2',
-                },
             ],
+            batch:[],
             subdata:{
                 id:'192302',
                 title: "第一次考试",
                 batch:"第一学期",
-                college:"软件学院",
+                type:'自评',
                 problem:[
                     {
                         id:1,
                         title:'重难点讲解',
                         option:[
-                            {
-                                id:1,
-                                title:'非常满意',
-                            },
-                            {
-                                id:2,
-                                title:'满意',
-                            },
-                            {
-                                id:3,
-                                title:'不满意',
-                            },
-                            {
-                                id:4,
-                                title:'非常不满意',
-                            }
-                        ]
-                    },
-                    {
-                        id:1,
-                        title:'重难点讲解',
-                        option:[
-                            {
-                                id:1,
-                                title:'非常满意',
-                            },
-                            {
-                                id:2,
-                                title:'满意',
-                            },
-                            {
-                                id:3,
-                                title:'不满意',
-                            },
-                            {
-                                id:4,
-                                title:'非常不满意',
-                            }
                         ]
                     }
                 ]
@@ -106,8 +29,38 @@ class WritPager extends React.Component {
         }
     }
     componentDidMount() {
+        this.fetch()
         console.log(this.props.match.params)
     }
+    fetch=()=>{
+        Axios({
+            url:'/selectIndex',
+            method:'post',
+            type:'json'
+        }).then(res=>{
+            if(res.data.status===1){
+                this.setState({
+                    treeData:res.data.data
+                })
+            }
+        })
+        Axios({
+            url:'/getBatch',
+            method:'post',
+            type:'json'
+        }).then(res=>{
+                this.setState({
+                    batch:res.data
+                })
+        })
+    }
+    //添加指标的函数
+    targetmeager=(keys)=>{
+        Axios({
+            
+        })
+    }
+
      onChange=(evals,value)=> {
         let data = Object.assign({}, this.state.subdata, { [evals]: value })
         this.setState({
@@ -149,7 +102,7 @@ class WritPager extends React.Component {
                             checkable
                             className="draggable-tree"
                             defaultExpandedKeys={this.state.expandedKeys}
-                            onSelect={this.onDragEnter}
+                            onCheck={this.targetmeager}
                         >
                             {loop(this.state.treeData)}
                         </Tree>
@@ -159,14 +112,14 @@ class WritPager extends React.Component {
                             <Col style={{ padding: 24, overflow: 'hidden', background: '#fff', marginTop: 12 }}>
                                 <Row>
                                     <Col span={12}>
-                                        <span>标题：</span><Input onChange={(v) => this.setState({ title: v.target.value })} placeholder="试卷名" style={{ width: '70%' }} />
+                                        <span>标题：</span><Input onChange={v=>this.onChange('title',v.target.value)} placeholder="试卷名" style={{ width: '70%' }} />
                                     </Col>
                                     <Col span={12}>
-                                        <span>学期: </span><Select
-                                            onChange={(v)=>this.onChange('batch',v)}
+                                        <span>类型: </span><Select
+                                            onChange={(v)=>this.onChange('',v)}
                                             showSearch
                                             style={{ width: '70%' }}
-                                            placeholder="批次"
+                                            placeholder="类型"
                                             optionFilterProp="children"
                                             filterOption={(input, option) =>
                                                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -178,19 +131,19 @@ class WritPager extends React.Component {
                                         </Select>
                                     </Col>
                                     <Col span={12} style={{ marginTop: 20 }}>
-                                        <span>学院：</span><Select
-                                            onChange={(v)=>this.onChange('college',v)}
+                                        <span>批次：</span><Select
+                                            onChange={(v)=>this.onChange('batch',v)}
                                             showSearch
                                             style={{ width: '70%' }}
-                                            placeholder="批次"
+                                            placeholder="批次："
                                             optionFilterProp="children"
                                             filterOption={(input, option) =>
                                                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                             }
                                         >
-                                            <Option value="软件学院">软件学院</Option>
-                                            <Option value="人工智能学院">人工智能学院</Option>
-                                            <Option value="大数据金融学院">大数据金融学院</Option>
+                                            {this.state.batch.map(v=>{
+                                               return <Option value={v.name}>{v.name}</Option>
+                                            })}
                                         </Select>
                                     </Col>
                                 </Row>
@@ -202,7 +155,7 @@ class WritPager extends React.Component {
                                         <Typography>{this.state.subdata.batch}</Typography>
                                     </Col>
                                     <Col span={12} style={{ textAlign: 'center' }}>
-                                        <Typography>{this.state.subdata.college}</Typography>
+                                        <Typography>{this.state.subdata.type}</Typography>
                                     </Col>
                                 </Row>
                             </Col>

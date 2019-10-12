@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon, Form, Radio, Button, Input,message,InputNumber } from 'antd'
+import { Form, Button, Input,message } from 'antd'
 import Axios from 'axios';
 let id = 0;
 class TargetAddFromCompent extends React.Component {

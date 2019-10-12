@@ -1,51 +1,113 @@
 import React from 'react'
-import {Card, Select,Input, Col, Row, Table} from 'antd'
-const { Option } = Select;
+import Axios from 'axios';
+import {Card, Select,Input, Col, Row, Table,Button, message} from 'antd'
+import {
+    G2,
+    Chart,
+    Geom,
+    Axis,
+    Tooltip,
+    Coord,
+    Label,
+    Legend,
+    View,
+    Guide,
+    Shape,
+    Facet,
+    Util
+  } from "bizcharts";
+  const { Option } = Select;
 const { Search } = Input;
 class Pjresult extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            data:[
-                {
-                    name:'李郑源',
-                    college:'软件学院',
-                    batch:'2019第一学期',
-                    type:'学生评',
-                    score:93.4
+            mapbatch:'',
+            batch:[],
+            olddata: [
+              ],
+              oldcols : {
+                month: {
+                  alias: "学期"
+                },
+                acc: {
+                  alias: "分数"
                 }
+              },
+            data:[
             ]
         }
+    }
+    handlemapbatch=()=>{
+        if(this.state.mapbatch===''){
+        }else{
+            let is=parseInt(this.state.mapbatch)
+
+            Axios({
+                url:'/scorepaihang',
+                method:'post',
+                params:{
+                    batch:is
+                }
+            }).then(res=>{
+                let ok=[]
+                for(let i=0;i<res.data.data.length;i=i+2){
+                    
+                    let o={}
+                    let s=i+1
+                    o.month=res.data.data[i]
+                    o.acc=parseInt(res.data.data[s])
+                    ok[i/2]=o
+                }
+                this.setState({
+                    olddata:ok
+                })
+            })
+        }
+    }
+    componentDidMount(){
+        this.fetch()
+    }
+    fetch=()=>{
+        Axios({
+            url: '/getBatch',
+            method: 'post',
+            type: 'json'
+        }).then(res => {
+            this.setState({
+                batch: res.data
+            })
+        })
+        Axios({
+            url:'/getpjtj',
+            method:'get'
+        }).then(res=>{
+            this.setState({
+                data:res.data.pjtj
+            })
+        })
     }
     render(){
         const columns = [
             {
               title: '教师名',
-              dataIndex: 'name',
-              key: 'name',
+              dataIndex: 'uname',
+              key: 'uname',
             },
             {
               title: '学院',
-              dataIndex: 'college',
-              key: 'college',
-            },
-            {
-                title:'批次',
-                dataIndex: 'batch',
-                key:'batch'
-            },
-            {
-                title:'类型',
-                dataIndex:'type',
-                key:'type'
+              dataIndex: 'cname',
+              key: 'cname',
             },
             {
                 title:'分数',
-                dataIndex:'score',
-                key:'score'
+                dataIndex:'fraction',
+                key:'fraction',
+                sorter: (a, b) => a.fraction - b.fraction,
             }
         ]
-        return <div style={{ padding: 24, background: '#fff', marginTop: 32 }}>
+        return <div>
+        <div style={{ padding: 24, background: '#fff', marginTop: 32 }}>
             
             <Card bordered={false} title="评教统计">
             <Row>
@@ -59,9 +121,9 @@ class Pjresult extends React.Component{
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
             >
-                <Option value="jack">第一学期</Option>
-                <Option value="lucy">第二学期</Option>
-                <Option value="tom">第三学期</Option>
+                {this.state.batch.map(v => {
+                                                    return <Option value={v.name}>{v.name}</Option>
+                                                })}
             </Select>
             </Col>
             <Col span={6}>
@@ -88,6 +150,61 @@ class Pjresult extends React.Component{
             </Row>
             </Card>
         </div>
+        <div style={{ padding: 24, background: '#fff', marginTop: 32 }}>
+            <Card bordered={false} title="评教统计">
+                <Select
+                    showSearch
+                    onChange={v=>this.setState({mapbatch:v})}
+                    style={{ width: 200 }}
+                    placeholder="选择批次"
+                    optionFilterProp="children"
+                    filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                >
+                   {this.state.batch.map(v => {
+                                                    return <Option value={v.id}>{v.name}</Option>
+                                                })}
+                </Select>
+                <Button type="primary" 
+                onClick={this.handlemapbatch}
+                style={{marginLeft:5}}
+                    >
+                    查询
+                </Button>
+                <Chart height={400} data={this.state.olddata} scale={this.state.oldcols} forceFit>
+          <Axis
+            name="month"
+            title={null}
+            tickLine={null}
+            line={{
+              stroke: "#E6E6E6"
+            }}
+          />
+          <Axis
+            name="acc"
+            line={false}
+            tickLine={null}
+            grid={null}
+            title={null}
+          />
+          <Tooltip />
+          <Geom
+            type="line"
+            position="month*acc"
+            size={1}
+            color="l (270) 0:rgba(255, 146, 255, 1) .5:rgba(100, 268, 255, 1) 1:rgba(215, 0, 255, 1)"
+            shape="smooth"
+            style={{
+              shadowColor: "l (270) 0:rgba(21, 146, 255, 0)",
+              shadowBlur: 60,
+              shadowOffsetY: 6
+            }}
+          />
+        </Chart>
+            </Card>
+        </div>
+        </div> 
     }
 }
 

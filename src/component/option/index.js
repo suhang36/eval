@@ -27,7 +27,7 @@ class Option extends React.Component{
                     <Typography style={{fontSize:16,fontWeight:"bold"}}>{this.props.problem.id}.{this.props.problem.title} </Typography>
                     <Radio.Group onChange={(v)=>{this.props.onchange(this.props.problem.id,v)}} size={"small"} style={{margin:20}}>
                         {this.props.problem.option.map(v=>{
-                            return (<Radio style={radioStyle} value={v.id} key={v.id}>
+                            return (<Radio key={v.id} style={radioStyle} value={v.id} key={v.id}>
                                 {v.title}
                                 </Radio>)
                             })}

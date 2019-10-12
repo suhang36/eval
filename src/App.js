@@ -16,7 +16,7 @@ class App extends React.Component{
       <Route path="/Login" component={Login}></Route>
       <Route path="/Demo" component={Game}></Route>
       <Route path='/Index' component={IndexLayout}></Route>
-      <Route path='/writePager/:id' component={WritPager}></Route>
+      <Route path='/writePager' component={WritPager}></Route>
       <Route path='/testpaper' component={TestPager}></Route>
       </div>
     )

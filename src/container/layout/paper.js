@@ -78,6 +78,11 @@ class Paper extends React.Component {
             })
         })
     }
+    handleSerach=(value)=>{
+        Axios({
+            url:'/'
+        })
+    }
     render() {
         return <div>
             <Card title="试卷管理"  extra={<div>
@@ -108,11 +113,16 @@ class Paper extends React.Component {
                 </Select>
                 <Search
                     placeholder="输入查询的内容"
-                    onSearch={value => console.log(value)}
+                    onSearch={this.handleSerach}
                     style={{ width: 200 }}
                 />
                 <Button type="primary" icon={'plus'}
-                     onClick={() => this.props.history.push('/writePager/3')} style={{ marginLeft: 10 }} >
+                     onClick={() => this.props.history.push({
+                        pathname: '/writePager',
+                        state: {
+                            id: 0,//试卷id
+                        }
+                })} style={{ marginLeft: 10 }} >
                     添加
                 </Button>
             </div>
@@ -126,7 +136,12 @@ class Paper extends React.Component {
                                 <span>{item.name}</span>
                             </Col>
                             <Col span={6} >
-                                <Button type="link" icon={'edit'} >
+                                <Button type="link" onClick={() => this.props.history.push({
+                                    pathname: '/writePager',
+                                    state: {
+                                        id: item.id,//试卷id
+                                    }
+                            })} icon={'edit'} >
                                     修改
                                 </Button>
                                 <Popconfirm

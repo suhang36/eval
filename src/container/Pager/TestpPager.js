@@ -109,6 +109,20 @@ class TestPager extends React.Component {
         })
         if(subok){
             console.log(JSON.stringify(this.state.subdata,null,2))
+            Axios({
+                url:'/insertGeneral',
+                method:'post',
+                data:{
+                    ...this.state.subdata
+                }
+            }).then(res=>{
+                if(res.data.test===1){
+                    message.success('提交成功')
+                    this.props.history.push('/index')
+                }else{
+                    message.error('提交失败')
+                }
+            })
         }else{
             message.error('没做完哦')
         }
@@ -122,7 +136,7 @@ class TestPager extends React.Component {
                     }
                 }).then(res => {
                     let data=res.data.subdata[0]
-                    data.bid=this.props.history.location.state.bid
+                    data.bid=this.props.history.location.state.id
                     data.name=this.props.history.location.state.name
                     data.tid=this.props.history.location.state.tid
                     this.setState({
@@ -134,7 +148,7 @@ class TestPager extends React.Component {
                 return <Layout className="layout">
                     <Content style={{ padding: '0 50px', marginTop: '10vh' }}>
                         <div style={{ background: '#fff', padding: 20, minHeight: '90vh' }}>
-                            <Button type='link'>返回上一级</Button>
+                            <Button type='link' href="/index">返回上一级</Button>
                             <Divider />
                             <Title level={4} style={{ textAlign: 'center' }}>{this.state.subdata.title}</Title>
                             <Row>
@@ -147,7 +161,7 @@ class TestPager extends React.Component {
                             </Row>
                             {/* 题目 */}
                             <Col style={{ padding: 24, overflow: 'hidden', background: '#fff' }} >
-                                {this.state.subdata.problem.map(v => { return <Option onchange={this.onchange} problem={v} ></Option> }
+                                {this.state.subdata.problem.map(v => { return <Option key={v.id} onchange={this.onchange} problem={v} ></Option> }
                                 )}
                                 <Divider />
                             </Col>

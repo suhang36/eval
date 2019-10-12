@@ -32,7 +32,6 @@ class TargetAddFromCompent extends React.Component {
             keys: nextKeys,
         });
     };
-
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
@@ -48,21 +47,18 @@ class TargetAddFromCompent extends React.Component {
                     option.fraction=values.optionscore[i]
                     // console.log(option)
                     op[i]=option
-                    // op[i]=
+                    data.id=this.props.pid
                 }
                 data.option=op
+                console.log(JSON.stringify(data,null,2))
                 Axios({
                     url:'/insertIndex',
                     method:'post',
-                    params:{
+                    data:{
                         ...data
                     }
                 }).then(v=>{
-                    if(v.data===1){
                         message.success('添加成功')
-                    }else{
-                        message.error('添加失败')
-                    }
                 })
                 // Axios({
                 //     url:'/insertIndexF',

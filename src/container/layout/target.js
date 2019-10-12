@@ -2,10 +2,11 @@ import React from 'react';
 import { Tree, Row, Col, Typography,Spin, Descriptions, Form,Tabs, Radio, Button, Divider, Input, Icon, message } from 'antd';
 import TargetNode from '../from/targetNode';
 import Axios from 'axios';
+import { withRouter } from 'react-router-dom'
 const { Title, Paragraph } = Typography;
 const { TreeNode } = Tree;
 const { TabPane } = Tabs
-
+@withRouter
 class Index extends React.Component {
     constructor(props) {
         super(props)
@@ -65,6 +66,8 @@ class Index extends React.Component {
         }).then(res=>{
             if(res.data===1){
                 message.success('删除成功')
+                this.fetch()
+                this.onDragEnter()
             }else{
                 message.warning('删除失败')
             }
@@ -161,9 +164,7 @@ class Index extends React.Component {
                                 {   
                                     this.state.showData.option.map(v=>{
                                         i++
-                                   return <Descriptions.Item key={v.id}  label={`选项${i}`}><Paragraph  editable={{ onChange:(str)=>{this.onChangeitem(str,v.id)}}}>{v.name}</Paragraph></Descriptions.Item>
-                                          
-                                            
+                                   return <Descriptions.Item key={v.id}  label={`选项${i}`}><Paragraph  editable={{ onChange:(str)=>{this.onChangeitem(str,v.id)}}}>{v.name}</Paragraph></Descriptions.Item>   
                                })}                        
                             </Descriptions>
                         </Col>
@@ -173,7 +174,7 @@ class Index extends React.Component {
                         <TabPane tab="指标管理" key="2">
                         <Row>
                         <Col span={24}>
-                        <TargetNode pid={this.state.showData.pid}></TargetNode>
+                        <TargetNode pid={this.state.showData.id}></TargetNode>
                         </Col>
                     </Row>
                         </TabPane>

@@ -26,14 +26,15 @@ class Paper extends React.Component {
     openbatch=()=>{
         if(typeof(this.state.batchopenindex)!=='undefined'){
             Axios({
-                url:'/openbatch',
+                url:'/updateBatchT',
                 method:'post',
                 params:{
                     id:this.state.batchopenindex
                 }
             }).then(res=>{
-                if (res.code===1) {
+                if (res.data===1) {
                     message.success('开启成功')
+                    this.fetch()
                 }else{
                     message.error('开启失败')
                 }

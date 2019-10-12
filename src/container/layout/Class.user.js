@@ -10,18 +10,7 @@ class CU extends React.Component{
             loading:false,
             solter:0,
             classdata:[
-                {
-                    id:'1',
-                    name:'1690019'
-                }
             ],
-            data:[
-                {
-                    id:'1',
-                    name:"苏航",
-                    class:"1690019"
-                }
-            ]
         }
         this.columns=[
             {
@@ -31,7 +20,17 @@ class CU extends React.Component{
             },
             {
                 title: '班级',
-                dataIndex: 'class',
+                dataIndex: 'classname',
+                width: '20%',
+            },
+            {
+                title: '课程',
+                dataIndex: 'curr',
+                width: '20%',
+            },
+            {
+                title: '学院',
+                dataIndex: 'college',
                 width: '20%',
             },
             {
@@ -51,7 +50,7 @@ class CU extends React.Component{
         ]
     }
 
-    fetch = (params = { "pageSize": 10, "pageNum": 1}) => {
+    fetch = (params) => {
         this.setState({ loading: true });
         Axios({
             url: '/getuserall',

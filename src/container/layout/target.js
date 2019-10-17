@@ -174,7 +174,7 @@ class Index extends React.Component {
                         <TabPane tab="指标管理" key="2">
                         <Row>
                         <Col span={24}>
-                        <TargetNode pid={this.state.showData.id}></TargetNode>
+                        <TargetNode id={this.state.showData.id} pid={this.state.showData.pid}></TargetNode>
                         </Col>
                     </Row>
                         </TabPane>

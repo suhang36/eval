@@ -67,7 +67,8 @@ class RoleC extends React.Component {
       })
     }
 
-    handleOk = () => {
+    handleOk = (e) => {
+      e.preventDefault();
         this.props.form.validateFields((err, values) => {
           if (!err) {
             console.log(JSON.stringify(values,null,2))
@@ -77,22 +78,24 @@ class RoleC extends React.Component {
             Axios({
               method:'post',
               url:'/addrole',
-              params:{
+              data:{
                 ...values
               }
               }
             ).then(res=>{
-              if(res.code===1){
+              if(res.data.code===1){
                 this.setState({
                   visible: false,
                   confirmLoading: false,
                 });
                 message.success("添加成功")
+                this.fetch()
+              }else{
+                message.error('添加失败')
               }
-              message.error('添加失败')
+             
             })
           }
-          
         });
       };
     handleCancel = () => {
@@ -186,7 +189,7 @@ class RoleC extends React.Component {
           onClose={this.onClose}
           visible={this.state.visible}
         >
-          <Form layout="vertical" hideRequiredMark>
+          <Form layout="vertical" hideRequiredMark onSubmit={this.handleOk}>
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item label="角色名">
@@ -227,7 +230,7 @@ class RoleC extends React.Component {
                 </Form.Item>
               </Col>
             </Row>
-          </Form>
+          
           <div
             style={{
               position: 'absolute',
@@ -243,10 +246,11 @@ class RoleC extends React.Component {
             <Button onClick={this.onClose} style={{ marginRight: 8 }}>
               取消
             </Button>
-            <Button htmlType="submit" loading={this.state.AddLoading} onClick={this.handleOk} type="primary">
+            <Button htmlType="submit" loading={this.state.AddLoading}  type="primary">
               提交
             </Button>
           </div>
+          </Form>
         </Drawer>
       </div>
         return <Row>

@@ -7,12 +7,13 @@ class TargetAddFromCompent extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
+              console.log(values.indexName)
                 Axios({
                   url:'/insertIndexF',
                   method:'post',
                   params:{
-                    name:values.indexname,
-                    id:this.props.pid
+                    name:values.indexName,
+                    pid:this.props.pid
                   }
                 }).then(res=>{
                   if(res.data===1){

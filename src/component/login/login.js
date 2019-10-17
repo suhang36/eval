@@ -10,7 +10,7 @@ class LoginContainer extends React.Component {
       <Form  className="login-form" onSubmit={this.props.onSubmit}>
         <Form.Item>
           {getFieldDecorator('username', {
-            rules: [{ required: true, message: 'Please input your username!' }],
+            rules: [{ required: true, message: '请输入用户名' }],
           })(
             <Input
               onChange={this.props.onchanges}
@@ -21,7 +21,7 @@ class LoginContainer extends React.Component {
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('password', {
-            rules: [{ required: true, message: 'Please input your Password!' }],
+            rules: [{ required: true, message: '请输入密码' }],
           })(
             <Input
               onChange={this.props.onchanges}

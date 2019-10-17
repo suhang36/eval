@@ -28,7 +28,7 @@ class TargetNode extends React.Component {
             case "添加题目指标":
                 return (<div>
                     {change}
-                    <TargetAddFrom pid={this.props.pid}></TargetAddFrom>
+                    <TargetAddFrom id={this.props.id}></TargetAddFrom>
                 </div>)
                 case "添加父级指标":
                         return <div>{change}

@@ -87,6 +87,20 @@ class Pjresult extends React.Component{
             })
         })
     }
+    handlesearch=(ms)=>{
+        Axios({
+            url:"/getpjtjexa",
+            method:'post',
+            params:{
+                exa:ms
+            }
+        }).then(res=>{
+            console.log(JSON.stringify(res.data.pjtjexa,null,2))
+            this.setState({
+                data:res.data.pjtjexa
+            })
+        })
+    }
     render(){
         const columns = [
             {
@@ -142,7 +156,7 @@ class Pjresult extends React.Component{
             </Select>
             </Col>
             <Col span={6}>
-            <Search  placeholder="查询老师" onSearch={value => console.log(value)} enterButton />
+            <Search onSearch={this.handlesearch} placeholder="查询老师"  enterButton />
             </Col>
             <Col style={{marginTop:20}} span={24}>
             <Table columns={columns} dataSource={this.state.data} />

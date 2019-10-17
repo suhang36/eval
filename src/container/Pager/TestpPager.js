@@ -136,7 +136,7 @@ class TestPager extends React.Component {
                     }
                 }).then(res => {
                     let data=res.data.subdata[0]
-                    data.bid=this.props.history.location.state.id
+                    data.bid=this.props.history.location.state.bid
                     data.name=this.props.history.location.state.name
                     data.tid=this.props.history.location.state.tid
                     this.setState({

@@ -39,7 +39,7 @@ class TargetAddFromCompent extends React.Component {
                 console.log(JSON.stringify(values,null,2))
                 let data={}
                 data.name=values.indexName
-                data.weight=values.weghit
+                data.weight=values.weight
                 let op=[];
                 for(let i=0;i<values.option.length;i++){ 
                     let option={}
@@ -47,7 +47,7 @@ class TargetAddFromCompent extends React.Component {
                     option.fraction=values.optionscore[i]
                     // console.log(option)
                     op[i]=option
-                    data.id=this.props.pid
+                    data.id=this.props.id
                 }
                 data.option=op
                 console.log(JSON.stringify(data,null,2))
@@ -131,7 +131,7 @@ class TargetAddFromCompent extends React.Component {
                             message: "请输入权重",
                         },
                     ],
-                })(<InputNumber placeholder='权重' min={0} max={1} style={{ width: '60%', marginRight: 8 }} />)}
+                })(<InputNumber placeholder='权重' min={1} max={100} style={{ width: '60%', marginRight: 8 }} />)}
                 
                 {keys.length > 1 ? (
                     <Icon
@@ -157,7 +157,7 @@ class TargetAddFromCompent extends React.Component {
             })(<Input />)}
             </Form.Item>
             <Form.Item label="权重">
-                    {getFieldDecorator('weghit', { initialValue: 0.1,rules: [
+                    {getFieldDecorator('weight', { initialValue: 0.1,rules: [
                 {
                     required: true,
                     message: '权重',

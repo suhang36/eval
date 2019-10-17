@@ -1,4 +1,4 @@
-import { Table, Popconfirm, Divider } from 'antd';
+import { Table, Popconfirm, Divider,Button } from 'antd';
 import React from 'react';
 import Axios from 'axios';
 import UserEdit from '../../component/edit/userEdit'
@@ -39,10 +39,10 @@ class UserList extends React.Component {
         key: 'option',
         render: (record) => (<div>
           <Popconfirm title="确定删除吗?" onConfirm={() => this.handleDelete(record.id)}>
-            <a>Delete</a>
+            <a>删除</a>
           </Popconfirm>
           <Divider type="vertical" />
-          <a onClick={() => this.handlEdit(record.id)}>Edit</a>
+          <a onClick={() => this.handlEdit(record.id)}>修改</a>
         </div>
         )
         ,
@@ -126,7 +126,7 @@ class UserList extends React.Component {
           loading={this.state.loading}
           onChange={this.handleTableChange}
         />
-        <UserEdit visible={this.state.visible} handleCancel={this.handleCancel} userinfo={this.state.userinfo}></UserEdit>
+        <UserEdit fecth={this.fetch} visible={this.state.visible} handleCancel={this.handleCancel} userinfo={this.state.userinfo}></UserEdit>
       </div>
     );
   }

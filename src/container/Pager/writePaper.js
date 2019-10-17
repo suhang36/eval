@@ -31,6 +31,7 @@ class WritPager extends React.Component {
                 this.fetch()
         }
         handlesub=()=>{
+            console.log(JSON.stringify(this.state.subdata,null,2))
             Axios({
                 url:"/addquestion",
                 method:'post',
@@ -125,8 +126,8 @@ class WritPager extends React.Component {
                 method:'post',
                 data:resdata
             }).then(res=>{
-                let  data= Object.assign({}, this.state.subData, { problem: res.data.problem })
-                console.log(JSON.stringify(res.data.problem,null,2))
+                let  data= Object.assign({}, this.state.subdata, { problem: res.data.problem })
+                console.log("------------->"+JSON.stringify(this.state.subdata,null,2))
                 this.setState({
                     subdata: data
                 })

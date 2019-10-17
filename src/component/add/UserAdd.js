@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Input,Row,Col,Checkbox, Modal, Button,Select,Typography} from 'antd'
+import { Form, Input,Row,Col,Checkbox,message, Modal, Button,Select,Typography} from 'antd'
 import { getrole } from '../../redux/role.redux'
 import {getcollege}from '../../redux/college.redux'
 import { connect } from 'react-redux'
@@ -41,12 +41,12 @@ class UserAddCompent extends React.Component {
           }
           }
         ).then(res=>{
-          if(res.code===1){
+          if(res.data.code===1){
             this.setState({
-              
               visible: false,
               confirmLoading: false,
             });
+            message.success('添加成功')
           }
          
         })

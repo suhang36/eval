@@ -16,48 +16,32 @@ import {
     Util
   } from "bizcharts";
 import Typography from 'antd/lib/typography/Typography';
+import Axios from 'axios';
 const { TabPane } = Tabs;
 const {Panel}=Collapse;
 class DataPager extends React.Component{
     constructor(props){
         super(props)
         this.state={
-           allData: [
-                {
-                  year: "A",
-                  population: 93
-                },
-                {
-                  year: "B",
-                  population: 73
-                },
-                {
-                  year: "C",
-                  population: 66
-                },
-                {
-                  year: "D",
-                  population:55
-                },
-              ],
-              data : [
-                {
-                  year: "非常满意",
-                  sales: 38
-                },
-                {
-                  year: "满意",
-                  sales: 52
-                },
-                {
-                  year: "不满意",
-                  sales: 61
-                },
-                {
-                  year: "非常不满意",
-                  sales: 145
-                }
-              ],
+           allData: {
+            "collegeName": "软件学院",
+            "score": 62.66666793823242,
+            "data": [
+              {
+                "score": 88,
+                "name": "自测问卷"
+              },
+              {
+                "score": 80,
+                "name": "学生评价老师问卷"
+              },
+              {
+                "score": 20,
+                "name": "评价同行问卷"
+              }
+            ],
+            "batch": "大一上学期"
+          },
               cols : {
                 sales: {
                   tickInterval: 20
@@ -65,31 +49,23 @@ class DataPager extends React.Component{
               },
               olddata: [
                 {
-                  month: "2019第一学期",
-                  acc: 84.0
+                  "score": "62.666668",
+                  "name": "大一上学期"
                 },
                 {
-                  month: "2019第二学期",
-                  acc: 14.9
+                  "score": "100.0",
+                  "name": "大一下学期"
                 },
                 {
-                  month: "2019第三学期",
-                  acc: 17.0
-                },
-                {
-                  month: "2019第四学期",
-                  acc: 20.2
-                },
-                {
-                  month: "2019第五学期",
-                  acc: 55.6
-                }, 
+                  "score": "75.0",
+                  "name": "大二上学期"
+                }
               ],
               oldcols : {
-                month: {
+                name: {
                   alias: "学期"
                 },
-                acc: {
+                score: {
                   alias: "分数"
                 }
               },
@@ -98,7 +74,36 @@ class DataPager extends React.Component{
     callback=(key)=> {
       console.log(key);
     }
-    
+    componentDidMount(){
+      this.fetch()
+    }
+    fetch=()=>{
+      Axios({
+        url:'/selectScoreTeacher',
+        method:'post',
+        params:{
+          name:sessionStorage.getItem('username')
+        }
+      }).then(res=>{
+        let data=res.data.data.map(item=>{
+          item.score=parseInt(item.score)
+          return item
+        })
+        this.setState({olddata:data})
+      })
+      Axios({
+        url:'/getquestiontypetj',
+        method:'post',
+        params:{
+          username:sessionStorage.getItem('username')
+        }
+      }).then(res=>{
+        console.log(JSON.stringify(res.data,null,2))
+        this.setState({
+          allData:res.data
+        })
+      })
+    }
     
     render(){
         return <div
@@ -106,68 +111,33 @@ class DataPager extends React.Component{
         ><Tabs defaultActiveKey="1">
         <TabPane tab="本期评教统计" key="1">
         <Descriptions title="本期总概">
-            <Descriptions.Item label="姓名">李郑源</Descriptions.Item>
-            <Descriptions.Item label="系别">软件学院</Descriptions.Item>
-            <Descriptions.Item label="总分数">94.4</Descriptions.Item>
-            <Descriptions.Item label="学期">2019第一学期</Descriptions.Item>
+            <Descriptions.Item label="姓名">{sessionStorage.getItem('username')}</Descriptions.Item>
+            <Descriptions.Item label="系别">{this.state.allData.collegeName}</Descriptions.Item>
+            <Descriptions.Item label="总分数">{parseInt(this.state.allData.score)}</Descriptions.Item>
+            <Descriptions.Item label="学期">{this.state.allData.batch}</Descriptions.Item>
         </Descriptions>
         <Typography style={{fontSize:16,fontWeight:'bold',marginBottom:12,color:'black'}}>详细统计:</Typography>
-            <div style={{width:500,height:200}}>
-                <Chart height={300} width={500} data={this.state.allData} forceFit>
-                <Coord type="polar" innerRadius={0.1} />
-                <Tooltip />
-                <Legend
-                    position="right"
-                    offsetY={-30}
-                    offsetX={-30}
-                />
-                <Geom
-                    type="interval"
-                    color="year"
-                    position="year*population"
-                    style={{
-                    lineWidth: 1,
-                    stroke: "#fff"
-                    }}
-                />
-                </Chart>
-            </div>
-        <Typography style={{fontSize:16,fontWeight:'bold',marginBottom:12,color:'black'}}>详细统计:</Typography>
-        <Collapse accordion onChange={this.callback}>
-          <Panel header="上课认真" key="1">
-            <div>
-              <Chart height={400} data={this.state.data} scale={this.state.cols} forceFit>
-                <Axis name="year" />
-                <Axis name="sales" />
-                <Tooltip
-                  crosshairs={{
-                    type: "y"
-                  }}
-                />
-                <Geom type="interval" position="year*sales" color='sales' />
-              </Chart>
-            </div>
-          </Panel>
-          <Panel header="受欢迎程度" key="2">
-            
-          </Panel>
-          <Panel header="This is panel header 3" key="3">
-            
-          </Panel>
-        </Collapse>
+              <Chart height={400} data={this.state.allData.data} scale={this.state.cols} forceFit>
+              <Axis name="name" />
+              <Axis name="score" />
+              <Tooltip
+                crosshairs={{
+                  type: "y"
+                }}
+              />
+              <Geom type="interval" position="name*score" />
+            </Chart>
         
         </TabPane>
         <TabPane tab="历史统计" key="2">
         <Descriptions title="本期总概">
-            <Descriptions.Item label="姓名">李郑源</Descriptions.Item>
-            <Descriptions.Item label="系别">软件学院</Descriptions.Item>
-            <Descriptions.Item label="入职时间">2019-6</Descriptions.Item>
+            <Descriptions.Item label="姓名">{sessionStorage.getItem('username')}</Descriptions.Item>
         </Descriptions>
         <Typography style={{fontSize:16,fontWeight:'bold',marginBottom:12,color:'black'}}>往期记录:</Typography>
         <div>
         <Chart height={400} data={this.state.olddata} scale={this.state.oldcols} forceFit>
           <Axis
-            name="month"
+            name="name"
             title={null}
             tickLine={null}
             line={{
@@ -175,7 +145,7 @@ class DataPager extends React.Component{
             }}
           />
           <Axis
-            name="acc"
+            name="score"
             line={false}
             tickLine={null}
             grid={null}
@@ -184,7 +154,7 @@ class DataPager extends React.Component{
           <Tooltip />
           <Geom
             type="line"
-            position="month*acc"
+            position="name*score"
             size={1}
             color="l (270) 0:rgba(255, 146, 255, 1) .5:rgba(100, 268, 255, 1) 1:rgba(215, 0, 255, 1)"
             shape="smooth"

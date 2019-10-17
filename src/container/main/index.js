@@ -36,7 +36,7 @@ class Main extends React.Component{
             case "Pjyourself":
                 return <Pjyourself></Pjyourself>
             default:
-                return <Pjteacher></Pjteacher>
+                return <div></div>
         }
     }
 }

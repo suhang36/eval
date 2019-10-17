@@ -59,7 +59,7 @@ class Pjmyself extends React.Component {
                             })} icon={'edit'} >
                                     开始评教
                                     </Button>:
-                                    <Typography>已关闭</Typography>
+                                    <Typography>当前批次没有试卷</Typography>
                                 }
                             </Col>
                         </Row>
